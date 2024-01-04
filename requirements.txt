@@ -1,0 +1,6 @@
+aws-wsgi
+flask
+pandas
+numpy
+fuzzywuzzy
+sklearn

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Recommender</title>
+</head>
+
+<body>
+    <h1>Game Recommender</h1>
+    <form method="post">
+        <label for="game_title">Enter a game title:</label>
+        <input type="text" id="game_title" name="game_title" required>
+        <button type="submit">Get Recommendations</button>
+    </form>
+
+    {% if game_title %}
+    {% if recommendations.empty %}
+    <h2>No recommendations found for '{{ game_title }}'.</h2>
+    {% else %}
+    <h2>Recommendations for {{ game_title }}</h2>
+    <table border="1">
+        <tr>
+            <th>Title</th>
+            <th>Developer</th>
+            <th>Genre</th>
+            <th>Release Date</th>
+        </tr>
+        {% for index, row in recommendations.iterrows() %}
+        <tr>
+            <td>{{ row['title'] }}</td>
+            <td>{{ row['developer'] }}</td>
+            <td>{{ row['genres'] }}</td>
+            <td>{{ row['release_date'] }}</td>
+
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% endif %}
+</body>
+
+</html>
