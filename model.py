@@ -37,9 +37,10 @@ def content_based_recommendations(title, df):
     # return dataframe with recommended titles
     # change this to return different data
     columns = ["title", "developer", "genres", "release_date"]
-    return (title, df[df['title'].isin(recommended_titles)][columns])
+    return title, df[df['title'].isin(recommended_titles)][columns]
 
 
-df = pd.read_csv("gamesdata_clean.csv", encoding="utf-8")
-result_df = content_based_recommendations("Team Fortress 2", df)  # testing
-print(result_df)
+if __name__ == "__main__":
+    df = pd.read_csv("gamesdata_clean.csv", encoding="utf-8")
+    title, result_df = content_based_recommendations("Team Fortress 2", df)  # testing
+    print(title, result_df)

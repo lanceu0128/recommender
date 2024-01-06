@@ -3,8 +3,6 @@ import pandas as pd
 from model import content_based_recommendations
 
 app = Flask(__name__)
-
-# Load your DataFrame
 df = pd.read_csv("gamesdata_clean.csv", encoding="utf-8")
 
 
