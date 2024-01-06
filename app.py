@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
 from model import content_based_recommendations
-import awsgi
 
 app = Flask(__name__)
 
@@ -17,19 +16,6 @@ def index():
             game_title, df)
 
         return jsonify(status=200, game_title=game_title, recommendations=recommendations)
-
-    #     if recommendations.empty:
-    #         # No recommendations found for the entered game title
-    #         message = f"No recommendations found for '{game_title}'."
-    #         return render_template("index.html", game_title=game_title, message=message)
-    #     else:
-    #         return render_template("index.html", game_title=game_title, recommendations=recommendations)
-
-    # return render_template("index.html")
-
-
-def handler(event, context):
-    return awsgi.response(app, event, context)
 
 
 if __name__ == "__main__":
