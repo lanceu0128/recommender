@@ -1,0 +1,19 @@
+org: lanceu0128
+app: recommender-flask-api
+service: recommender-api-http
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.8
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+plugins:
+  - serverless-python-requirements

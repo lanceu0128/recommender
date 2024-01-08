@@ -6,8 +6,6 @@ from sklearn.neighbors import NearestNeighbors
 
 
 def content_based_recommendations(title, df):
-    title = title.title()
-
     # find game index
     try:
         index = df[df['title'] == title].index[0]
@@ -42,5 +40,5 @@ def content_based_recommendations(title, df):
 
 if __name__ == "__main__":
     df = pd.read_csv("gamesdata_clean.csv", encoding="utf-8")
-    title, result_df = content_based_recommendations("Team Fortress 2", df)  # testing
+    title, result_df = get_recommendations("Team Fortress 2", df)  # testing
     print(title, result_df)
