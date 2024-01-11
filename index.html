@@ -1,0 +1,127 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Search</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+    <script>
+        async function makeAPICall(gameName) {
+            const apiURL = "https://ac4s67dn01.execute-api.us-east-1.amazonaws.com";
+            const jsonData = { game_title: gameName };
+
+            try {
+                const response = await fetch(apiURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(jsonData),
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log("API request successful!");
+                    console.log("Response:", responseData);
+
+                    // Display recommendations on the webpage
+                    displayRecommendations(responseData);
+                } else {
+                    console.error(`API request failed with status code ${response.status}`);
+                    console.error("Response:", await response.text());
+                }
+            } catch (error) {
+                console.error("An error occurred:", error);
+            }
+        }
+
+        function displayRecommendations(data) {
+            const recommendationsContainer = document.getElementById('recommendations');
+            recommendationsContainer.innerHTML = `<h2>${data.message}</h2>`;
+
+            const cardsContainer = document.createElement('div');
+            cardsContainer.classList.add('container');
+
+            data.recommendations.forEach((recommendation, index) => {
+                const gameCard = document.createElement('div');
+                gameCard.classList.add('game-card');
+
+                // Apply genre-specific background color
+                const genreList = recommendation.genres.split(" ");
+                if (genreList.length == 1) {
+                    genreList[0] = genreList[0].toLowerCase();
+                    const genreColorVariable = `--genre-${genreList[0]}`;
+                    const genreColor = getComputedStyle(document.documentElement).getPropertyValue(genreColorVariable);
+                    gameCard.style.backgroundColor = genreColor;
+                } else {
+                    genreList[1] = genreList[1].toLowerCase();
+                    const genreColorVariable1 = `--genre-${genreList[1]}`;
+                    const genreColor1 = getComputedStyle(document.documentElement).getPropertyValue(genreColorVariable1);
+                    gameCard.style.backgroundColor = genreColor1;
+                }
+
+                gameCard.innerHTML = `
+                    <h3>${recommendation.title}</h3>
+                    <p><strong>Developer:</strong> ${recommendation.developer}</p>
+                    <p><strong>Genres:</strong> ${recommendation.genres}</p>
+                    <p><strong>Release Date:</strong> ${recommendation.release_date}</p>
+                `;
+
+                cardsContainer.appendChild(gameCard);
+
+                // Attach event listener to each card for hover effect
+                gameCard.addEventListener("mousemove", (e) => {
+                    const rect = gameCard.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+
+                    const rotationX = `${y / 7}deg`;
+                    const rotationY = `${-x / 7}deg`;
+
+                    gameCard.style.transform = `rotateX(${rotationX}) rotateY(${rotationY}) scale(1.05)`;
+                });
+
+                gameCard.addEventListener("mouseout", () => {
+                    gameCard.style.transform = 'none';
+                });
+            });
+
+            recommendationsContainer.appendChild(cardsContainer);
+        }
+
+        function handleSearchButtonClick() {
+            const searchInput = document.getElementById('gameSearch');
+            const gameName = searchInput.value.trim();
+
+            if (gameName !== '') {
+                makeAPICall(gameName);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Steam Games Recommender</h1>
+    <label for="gameSearch">Enter a game:</label>
+    <input type="text" id="gameSearch">
+    <button onclick="handleSearchButtonClick()">Search</button>
+
+    <div id="recommendations"></div>
+
+    <footer>
+        <p>Made with <i class="fa-solid fa-heart"></i> by <a class="footer-link"
+                href="https://github.com/Jainil-Desai">Jainil Desai</a> and <a class="footer-link"
+                href="https://github.com/lanceu0128">Lance Uymatiao</a></p>
+    </footer>
+
+</body>
+
+</html>
